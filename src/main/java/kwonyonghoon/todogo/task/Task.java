@@ -35,16 +35,23 @@ public class Task {
     private String description;
 
     @Column(nullable = false)
-    private LocalDateTime deadLine;
+    private LocalDateTime deadline;
 
     @Column(nullable = false)
     private Boolean status;
 
     @Builder
-    public Task(String title, String description, LocalDateTime deadLine, Boolean status) {
+    public Task(String title, String description, LocalDateTime deadline, Boolean status) {
         this.title = title;
         this.description = description;
-        this.deadLine = deadLine;
+        this.deadline = deadline;
+        this.status = status;
+    }
+
+    public void update(String title, String description, LocalDateTime deadline, Boolean status) {
+        this.title = title;
+        this.description = description;
+        this.deadline = deadline;
         this.status = status;
     }
 }
