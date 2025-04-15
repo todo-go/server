@@ -164,12 +164,17 @@ class TaskApiControllerTest {
         final String description = "description";
         final LocalDateTime deadline = LocalDateTime.now();
         final Boolean status = false;
+        final User user = userRepository.save(User.builder()
+                .phoneNumber("010-4072-7941")
+                .name("스포는범죄다")
+                .build());
 
         Task savedTask = taskRepository.save(Task.builder()
                 .title(title)
                 .description(description)
                 .deadline(deadline)
                 .status(status)
+                .user(user)
                 .build());
 
         // when
@@ -191,12 +196,17 @@ class TaskApiControllerTest {
         final String description = "description";
         final LocalDateTime deadline = LocalDateTime.now();
         final Boolean status = false;
+        final User user = userRepository.save(User.builder()
+                .phoneNumber("010-4072-7941")
+                .name("스포는범죄다")
+                .build());
 
         Task savedTask = taskRepository.save(Task.builder()
                 .title(title)
                 .description(description)
                 .deadline(deadline)
                 .status(status)
+                .user(user)
                 .build());
 
         final String newTitle = "new title";
@@ -204,7 +214,7 @@ class TaskApiControllerTest {
         final LocalDateTime newDeadline = LocalDateTime.now();
         final Boolean newStatus = true;
 
-        UpdateTaskRequest request = new UpdateTaskRequest(newTitle, newDescription, newDeadline, newStatus);
+        UpdateTaskRequest request = new UpdateTaskRequest(newTitle, newDescription, newDeadline, newStatus, user.getId());
 
         // when
         ResultActions result = mockMvc.perform(put(url, savedTask.getId())
