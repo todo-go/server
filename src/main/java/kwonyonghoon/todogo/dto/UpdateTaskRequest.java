@@ -14,4 +14,5 @@ public class UpdateTaskRequest {
     private String description;
     private LocalDateTime deadline;
     private Boolean status;
+    private Long userId;
 }

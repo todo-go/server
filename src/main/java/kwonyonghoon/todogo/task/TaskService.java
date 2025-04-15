@@ -42,9 +42,12 @@ public class TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
+        if(!task.getUser().getId().equals(request.getUserId())){
+            throw new IllegalArgumentException("본인이 작성한 Task만 수정할 수 있습니다.");
+        }
+
         task.update(request.getTitle(), request.getDescription(), request.getDeadline(), request.getStatus());
 
         return task;
     }
-
 }
