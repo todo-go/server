@@ -3,6 +3,8 @@ package kwonyonghoon.todogo.task;
 import kwonyonghoon.todogo.dto.AddTaskRequest;
 import kwonyonghoon.todogo.dto.TaskResponse;
 import kwonyonghoon.todogo.dto.UpdateTaskRequest;
+import kwonyonghoon.todogo.user.UserRepository;
+import kwonyonghoon.todogo.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +17,17 @@ import java.util.List;
 public class TaskApiController {
 
     private final TaskService taskService;
+    private final UserRepository userRepository;
 
     @PostMapping("/api/tasks")
-    public ResponseEntity<Task> addTask(@RequestBody AddTaskRequest request){
+    public ResponseEntity<TaskResponse> addTask(@RequestBody AddTaskRequest request){
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+        Task task = request.toEntity(user);
         Task savedTask = taskService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(savedTask);
+                .body(new TaskResponse(savedTask));
     }
 
     @GetMapping("/api/tasks")
@@ -52,10 +58,10 @@ public class TaskApiController {
     }
 
     @PutMapping("/api/tasks/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request){
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request){
         Task updatedTask = taskService.update(id, request);
 
         return ResponseEntity.ok()
-                .body(updatedTask);
+                .body(new TaskResponse(updatedTask));
     }
 }

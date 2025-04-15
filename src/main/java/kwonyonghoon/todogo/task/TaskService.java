@@ -3,6 +3,8 @@ package kwonyonghoon.todogo.task;
 import jakarta.transaction.Transactional;
 import kwonyonghoon.todogo.dto.AddTaskRequest;
 import kwonyonghoon.todogo.dto.UpdateTaskRequest;
+import kwonyonghoon.todogo.user.User;
+import kwonyonghoon.todogo.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,13 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     public Task save(AddTaskRequest request){
-        return taskRepository.save(request.toEntity());
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(()-> new IllegalArgumentException("User not found"));
+
+        return taskRepository.save(request.toEntity(user));
     }
 
     public List<Task> findAll(){

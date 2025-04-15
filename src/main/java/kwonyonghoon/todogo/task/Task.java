@@ -1,6 +1,7 @@
 package kwonyonghoon.todogo.task;
 
 import jakarta.persistence.*;
+import kwonyonghoon.todogo.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,12 +41,17 @@ public class Task {
     @Column(nullable = false)
     private Boolean status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Builder
-    public Task(String title, String description, LocalDateTime deadline, Boolean status) {
+    public Task(String title, String description, LocalDateTime deadline, Boolean status, User user) {
         this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.status = status;
+        this.user = user;
     }
 
     public void update(String title, String description, LocalDateTime deadline, Boolean status) {
