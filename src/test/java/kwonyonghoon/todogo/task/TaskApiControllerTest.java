@@ -3,6 +3,8 @@ package kwonyonghoon.todogo.task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kwonyonghoon.todogo.dto.AddTaskRequest;
 import kwonyonghoon.todogo.dto.UpdateTaskRequest;
+import kwonyonghoon.todogo.user.User;
+import kwonyonghoon.todogo.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,11 +43,15 @@ class TaskApiControllerTest {
     @Autowired
     TaskRepository taskRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @BeforeEach
     public void mockMvcSetUp(){
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .build();
         taskRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @DisplayName("addTask: 데이터 추가에 성공한다.")
@@ -57,7 +63,12 @@ class TaskApiControllerTest {
         final String description = "description";
         final LocalDateTime deadline = LocalDateTime.now();
         final Boolean status = false;
-        final AddTaskRequest userRequest = new AddTaskRequest(title, description, deadline, status);
+        final User user = userRepository.save(User.builder()
+                .phoneNumber("010-4072-7941")
+                .name("스포는범죄다")
+                .build());
+
+        final AddTaskRequest userRequest = new AddTaskRequest(title, description, deadline, status, user.getId());
 
         final String requestBody = objectMapper.writeValueAsString(userRequest);
 
@@ -75,6 +86,7 @@ class TaskApiControllerTest {
         assertThat(tasks.get(0).getTitle()).isEqualTo(title);
         assertThat(tasks.get(0).getDescription()).isEqualTo(description);
         assertThat(tasks.get(0).getStatus()).isEqualTo(status);
+        assertThat(tasks.get(0).getUser().getId()).isEqualTo(user.getId());
     }
 
     @DisplayName("findAllTasks: 데이터 목록 조회에 성공한다.")
@@ -86,12 +98,17 @@ class TaskApiControllerTest {
         final String description = "description";
         final LocalDateTime deadline = LocalDateTime.now();
         final Boolean status = false;
+        final User user = userRepository.save(User.builder()
+                .phoneNumber("010-4072-7941")
+                .name("스포는범죄다")
+                .build());
 
         taskRepository.save(Task.builder()
                 .title(title)
                 .description(description)
                 .deadline(deadline)
                 .status(status)
+                .user(user)
                 .build());
 
         // when
@@ -114,12 +131,17 @@ class TaskApiControllerTest {
         final String description = "description";
         final LocalDateTime deadline = LocalDateTime.now();
         final Boolean status = false;
+        final User user = userRepository.save(User.builder()
+                .phoneNumber("010-4072-7941")
+                .name("스포는범죄다")
+                .build());
 
         Task savedTask = taskRepository.save(Task.builder()
                 .title(title)
                 .description(description)
                 .deadline(deadline)
                 .status(status)
+                .user(user)
                 .build());
 
         // when
