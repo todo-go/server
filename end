@@ -1,0 +1,14 @@
+[33mcommit 593a013ca9349e48f71f2fdaf6d4381c291ee39e[m[33m ([m[1;36mHEAD -> [m[1;32mdevelop-1[m[33m, [m[1;31morigin/feature/1-task-entity[m[33m, [m[1;31morigin/develop-1[m[33m, [m[1;32m0a[m[33m)[m
+Author: kwonyonghoon <biggrace681@gmail.com>
+Date:   Thu Apr 10 10:27:36 2025 +0900
+
+    [Feature] #1 - Task 엔티티 생성
+    
+    변경 사항
+    - Task, TaskRepository 파일 생성
+
+[33mcommit 6f5bf44356e4a537dfb6d44922ad41e9c166dd64[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: kwonyonghoon <biggrace681@gmail.com>
+Date:   Wed Apr 9 19:29:32 2025 +0900
+
+    프로젝트 생성
