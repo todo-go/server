@@ -13,6 +13,11 @@ public class UserService {
 
     @Transactional
     public UserResponse registerUser(String phoneNumber, String name){
+
+        if(userRepository.existsByPhoneNumber(phoneNumber)){
+            throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
+        }
+
          User user = User.builder()
                  .phoneNumber(phoneNumber)
                  .name(name)
