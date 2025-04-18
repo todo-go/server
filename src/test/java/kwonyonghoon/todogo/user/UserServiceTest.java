@@ -22,7 +22,7 @@ class UserServiceTest {
     @Test
     void signup(){
         // given
-        String phoneNumber = "010-1234-5678";
+        String phoneNumber = "010-1234-5679";
         String name = "홍길동";
 
         // when
