@@ -64,4 +64,14 @@ public class TaskApiController {
         return ResponseEntity.ok()
                 .body(new TaskResponse(updatedTask));
     }
+
+    @GetMapping("/api/tasks/user/{uuid}")
+    public ResponseEntity<List<TaskResponse>> findTasksByUserUuid(@PathVariable String uuid){
+        List<TaskResponse> tasks = taskService.findAllByUserUuid(uuid)
+                .stream()
+                .map(TaskResponse::new)
+                .toList();
+
+        return ResponseEntity.ok().body(tasks);
+    }
 }
