@@ -50,4 +50,10 @@ public class TaskService {
 
         return task;
     }
+
+    public List<Task> findAllByUserUuid(String uuid){
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new IllegalArgumentException("해당 UUID를 가진 유저가 없습니다."));
+        return taskRepository.findAllByUser(user);
+    }
 }
