@@ -21,24 +21,49 @@ public class TaskService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(()-> new IllegalArgumentException("User not found"));
 
-        return taskRepository.save(request.toEntity(user));
+        Long nextTaskNumber = getNextTaskNumber(user);
+
+        if(nextTaskNumber == null){
+            throw new IllegalArgumentException("TaskNumber는 Null이 될 수 없습니다");
+        }
+
+        Task task = Task.builder().
+                title(request.getTitle())
+                .description(request.getDescription())
+                .deadline(request.getDeadline())
+                .status(request.getStatus())
+                .user(user)
+                .taskNumber(nextTaskNumber)
+                .build();
+
+        return taskRepository.save(task);
+    }
+
+    public Long getNextTaskNumber(User user){
+        Long nextTaskNumber = taskRepository.countByUser(user) + 1;
+
+        if(nextTaskNumber == null){
+            throw new IllegalArgumentException("TaskNumber는 Null이 될 수 없습니다");
+        }
+
+        return nextTaskNumber;
     }
 
     public List<Task> findAll(){
         return taskRepository.findAll();
     }
 
-    public Task findById(Long id){
+    public Task findById(TaskId id){
         return taskRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    public void delete(Long id){
+    public void delete(TaskId id){
         taskRepository.deleteById(id);
     }
 
     @Transactional
-    public Task update(Long id, UpdateTaskRequest request){
+    public Task update(TaskId id, UpdateTaskRequest request){
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 

@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @Getter
 public class AddTaskRequest {
 
-    public String title;
-    public String description;
-    public LocalDateTime deadline;
-    public Boolean status;
-    public Long userId;
+    private String title;
+    private String description;
+    private LocalDateTime deadline;
+    private Boolean status;
+    private Long userId;
 
     public Task toEntity(User user){
         return Task.builder()
