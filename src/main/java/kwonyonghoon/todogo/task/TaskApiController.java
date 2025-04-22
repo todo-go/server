@@ -21,9 +21,9 @@ public class TaskApiController {
 
     @PostMapping("/api/tasks")
     public ResponseEntity<TaskResponse> addTask(@RequestBody AddTaskRequest request){
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
-        Task task = request.toEntity(user);
+//        User user = userRepository.findById(request.getUserId())
+//                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+//        Task task = request.toEntity(user);
         Task savedTask = taskService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -41,28 +41,39 @@ public class TaskApiController {
                 .body(tasks);
     }
 
-    @GetMapping("/api/tasks/{id}")
-    public ResponseEntity<TaskResponse> findTaskById(@PathVariable Long id){
-        Task task = taskService.findById(id);
+    @GetMapping("/api/users/{userId}/tasks/{taskNumber}")
+    public ResponseEntity<TaskResponse> findTask(
+            @PathVariable Long userId,
+            @PathVariable Long taskNumber){
+
+        TaskId taskId = new TaskId(userId, taskNumber);
+        Task task = taskService.findById(taskId);
 
         return ResponseEntity.ok()
                 .body(new TaskResponse(task));
     }
 
-    @DeleteMapping("/api/tasks/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id){
-        taskService.delete(id);
+    @DeleteMapping("/api/users/{userId}/tasks/{taskNumber}")
+    public ResponseEntity<Void> deleteTask(
+            @PathVariable Long userId,
+            @PathVariable Long taskNumber){
+
+        TaskId taskId = new TaskId(userId, taskNumber);
+        taskService.delete(taskId);
 
         return ResponseEntity.ok()
                 .build();
     }
 
-    @PutMapping("/api/tasks/{id}")
-    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request){
-        Task updatedTask = taskService.update(id, request);
+    @PutMapping("/api/users/{userId}/tasks/{taskNumber}")
+    public ResponseEntity<TaskResponse> updateTask(
+            @PathVariable Long userId,
+            @PathVariable Long taskNumber,
+            @RequestBody UpdateTaskRequest request){
 
-        return ResponseEntity.ok()
-                .body(new TaskResponse(updatedTask));
+        TaskId taskId = new TaskId(userId, taskNumber);
+        Task updatedTask = taskService.update(taskId, request);
+        return ResponseEntity.ok().body(new TaskResponse(updatedTask));
     }
 
     @GetMapping("/api/tasks/user/{uuid}")

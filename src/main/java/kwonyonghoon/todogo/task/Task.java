@@ -16,10 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Task {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
-    private Long id;
+    @EmbeddedId
+    private TaskId id;
 
     @CreatedDate
     @Column(name = "created_at")
@@ -42,16 +40,18 @@ public class Task {
     private Boolean status;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Builder
-    public Task(String title, String description, LocalDateTime deadline, Boolean status, User user) {
+    public Task(User user, Long taskNumber, String title, String description, LocalDateTime deadline, Boolean status) {
+        this.id = new TaskId(user.getId(), taskNumber);
+        this.user = user;
         this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.status = status;
-        this.user = user;
     }
 
     public void update(String title, String description, LocalDateTime deadline, Boolean status) {

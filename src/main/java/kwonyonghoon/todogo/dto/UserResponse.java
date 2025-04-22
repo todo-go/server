@@ -1,9 +1,14 @@
 package kwonyonghoon.todogo.dto;
 
-import kwonyonghoon.todogo.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import kwonyonghoon.todogo.user.User;
 
 @Getter
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class UserResponse {
 
     private final Long id;
@@ -17,5 +22,4 @@ public class UserResponse {
         this.phoneNumber = user.getPhoneNumber();
         this.name = user.getName();
     }
-
 }
