@@ -1,6 +1,7 @@
 package kwonyonghoon.todogo.user;
 
 import jakarta.transaction.Transactional;
+import kwonyonghoon.todogo.dto.UserRegistrationResult;
 import kwonyonghoon.todogo.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,19 +13,19 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UserResponse registerUser(String phoneNumber, String name){
+    public UserRegistrationResult registerUser(String phoneNumber, String name){
 
-        if(userRepository.existsByPhoneNumber(phoneNumber)){
-            throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
-        }
+        return userRepository.findByPhoneNumber(phoneNumber)
+                .map(user -> new UserRegistrationResult(new UserResponse(user), false)) // 기존 유저
+                .orElseGet(() -> {
+                    User user = User.builder()
+                            .phoneNumber(phoneNumber)
+                            .name(name)
+                            .build();
+                    User savedUser = userRepository.save(user);
+                    return new UserRegistrationResult(new UserResponse(savedUser), true); // 새로 생성
+                });
 
-         User user = User.builder()
-                 .phoneNumber(phoneNumber)
-                 .name(name)
-                 .build();
-
-         User savedUser = userRepository.save(user);
-         return new UserResponse(savedUser);
     }
 
 }
