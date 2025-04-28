@@ -1,6 +1,7 @@
 package kwonyonghoon.todogo.user;
 
 import kwonyonghoon.todogo.dto.AddUserRequest;
+import kwonyonghoon.todogo.dto.UserRegistrationResult;
 import kwonyonghoon.todogo.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,12 @@ public class UserController {
 
     @PostMapping("/api/users")
     public ResponseEntity<UserResponse> registerUser(@RequestBody AddUserRequest request){
-        UserResponse response = userService.registerUser(request.getPhoneNumber(), request.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        UserRegistrationResult result = userService.registerUser(request.getPhoneNumber(), request.getName());
+        if(result.isNewUser()){
+            return ResponseEntity.status(HttpStatus.CREATED).body(result.getUserResponse());
+        }else{
+            return ResponseEntity.ok(result.getUserResponse());
+        }
     }
 
 }
